@@ -1,0 +1,13 @@
+local.file_match "u8" {
+  path_targets = [{"__path__" = "/var/log/u8/*.jsonl", "service" = "u8-import"}]
+  sync_period = "5s"
+}
+loki.source.file "u8" {
+  targets    = local.file_match.u8.targets
+  forward_to = [loki.write.local.receiver]
+}
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

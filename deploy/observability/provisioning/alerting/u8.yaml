@@ -1,0 +1,32 @@
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: U8 local alerts
+    folder: U8 Operations
+    interval: 1m
+    rules:
+      - uid: u8-error-logs
+        title: U8 errors in last five minutes
+        condition: C
+        for: 0s
+        noDataState: OK
+        execErrState: Alerting
+        data:
+          - refId: A
+            datasourceUid: u8-loki
+            relativeTimeRange: {from: 600, to: 0}
+            model:
+              expr: 'sum(count_over_time({service="u8-import"} | json | environment=~"u8|mock" | level=~"ERROR|CRITICAL" [5m]))'
+              queryType: instant
+              refId: A
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: A
+              refId: C
+              conditions:
+                - evaluator: {type: gt, params: [0]}
+                  operator: {type: and}
+                  reducer: {type: last, params: []}
+                  type: query

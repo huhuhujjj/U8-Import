@@ -1,0 +1,26 @@
+[
+  {
+    "id": "PROD-001",
+    "name": "Product Name 1",
+    "number": 100234,
+    "headline": "Headline Text 1",
+    "description": "Description text 1",
+    "brand": "Brand A"
+  },
+  {
+    "id": "PROD-002",
+    "name": "Product Name 2",
+    "number": 100235,
+    "headline": "Headline Text 2",
+    "description": "Description text 2",
+    "brand": "Brand B"
+  },
+  {
+    "id": "PROD-003",
+    "name": "Product Name 3",
+    "number": 100236,
+    "headline": "Headline Text 3",
+    "description": "Description text 3",
+    "brand": "Brand C"
+  }
+]

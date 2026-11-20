@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>U8 运维状态</title>
+<style>body{font:16px system-ui;max-width:1000px;margin:40px auto;padding:16px;background:#f4f7fa;color:#183044}section{background:white;padding:24px;border-radius:10px;margin:20px 0}li{margin:12px 0}.bad{color:#b42318}.good{color:#16724c}pre{white-space:pre-wrap}a{color:#087e9b}</style>
+<h1>U8 运维状态</h1><a href="/">返回导入工作台</a> · <a href="http://127.0.0.1:3000/">集中日志（服务器本机）</a>
+<p>每5秒刷新。隔离失败任务需核对原任务；此页面不会重新提交业务订单。</p>
+<section><h2 id="health">正在检查</h2><ul id="alerts"></ul></section>
+<section><h2>数据库与队列</h2><pre id="details"></pre></section>
+<section><h2>集中运行日志</h2><label>任务 ID <input id="job"></label> <label>级别 <select id="level"><option value="">全部</option><option>INFO</option><option>WARNING</option><option>ERROR</option><option>CRITICAL</option></select></label><button onclick="logs()">查询</button><pre id="logs"></pre></section>
+<script>
+async function refresh(){try{const r=await fetch('/api/operations');if(!r.ok)throw Error('HTTP '+r.status);const v=await r.json();const h=document.getElementById('health');h.textContent=v.healthy?'运行正常':'需要处理';h.className=v.healthy?'good':'bad';const list=document.getElementById('alerts');list.replaceChildren();for(const a of v.alerts){const li=document.createElement('li');li.textContent=a.code+'：'+a.message;list.append(li)}document.getElementById('details').textContent=JSON.stringify(v,null,2)}catch(e){document.getElementById('health').textContent='服务不可用：'+e.message}}
+refresh();setInterval(refresh,5000);
+async function logs(){try{const p=new URLSearchParams({job_id:document.getElementById('job').value,level:document.getElementById('level').value});const r=await fetch('/api/operations/logs?'+p);const v=await r.json();document.getElementById('logs').textContent=(v.items||[]).map(x=>JSON.stringify(x)).join('\n')}catch(e){document.getElementById('logs').textContent=e.message}}logs();
+</script></html>
